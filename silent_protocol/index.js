@@ -3,26 +3,17 @@ import fs from "fs";
 import { join } from "path";
 import { fileURLToPath } from "url";
 import { sendMessage } from "../bailey/send-message.js";
+import prompt from "prompt-sync"
 
 const positionUrl =
   "https://ceremony-backend.silentprotocol.org/ceremony/position";
 const pingUrl = "https://ceremony-backend.silentprotocol.org/ceremony/ping";
 const tokenFile = "tokens.txt";
 
+
 function loadToken() {
   try {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = join(__filename, "..");
-
-    const filePath = join(__dirname, tokenFile);
-
-    const data = fs.readFileSync(filePath, "utf8");
-    const tokens = data
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line);
-    console.log(`${tokens.length} tokens loaded.`);
-    return tokens[0];
+    return prompt()('Enter your Token: ');
   } catch (error) {
     console.error(`Error loading tokens: ${error.message}`);
     return [];
@@ -114,9 +105,13 @@ async function runAutomation(token) {
 }
 
 async function silentProtocol() {
-  const token = loadToken();
+  let token = null;
 
-  if (!token.length) {
+  while (!token) {
+    token = loadToken();
+  }
+
+  if (!token) {
     console.log("No token available. Exiting.");
     return;
   }
