@@ -99,11 +99,11 @@ async function runAutomation(token) {
     const data = await getPosition(token);
     await pingServer(token);
 
-    if ((data.behind % 1000 == 0) & (data.behind > 0)) {
+    if ((data?.behind % 1000 == 0) & (data?.behind > 0)) {
       sendMessage("Your Position :", data.behind);
     }
 
-    if (data.behind <= 5 && !isSent) {
+    if (data?.behind <= 5 && !isSent) {
       sendMessage("Your position is 5, please be READY!");
       isSent = true;
     }

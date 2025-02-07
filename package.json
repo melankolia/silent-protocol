@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "connect-wa": "node bailey/connect-wa.js",
+    "connect-wa": "node bailey/index.js",
     "start": "node silent_protocol/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

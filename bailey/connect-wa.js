@@ -14,7 +14,7 @@ async function connectWA() {
   sock.ev.on("connection.update", async (update) => {
     if (update.connection === "open") {
       console.log("WhatsApp connected!");
-      process.exit();
+      // process.exit();
     }
   });
 }
