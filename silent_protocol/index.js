@@ -7,9 +7,13 @@ const positionUrl =
   "https://ceremony-backend.silentprotocol.org/ceremony/position";
 const pingUrl = "https://ceremony-backend.silentprotocol.org/ceremony/ping";
 const waUrl = `${process.env.WA_URL}/send-message`
+const account = {
+  name: null
+}
 
 function loadToken() {
   try {
+    
     return prompt()('Enter your Token: ');
   } catch (error) {
     console.error(`Error loading tokens: ${error.message}`);
@@ -106,13 +110,13 @@ async function runAutomation(token) {
     console.log({ data })
 
     if (data?.behind <= 5 && !isSent) {
-      await sendMessage("Your position is 5, please be READY!");
-      await sendMessage("Your position is 5, please be READY!");
+      await sendMessage(`Account ${account.name} | Your position is 5, please be READY!`);
+      await sendMessage(`Account ${account.name} | Your position is 5, please be READY!`);
 
       isSent = true;
     }
     else if ((data?.behind % 1000 == 0) & (data?.behind > 0)) {
-      await sendMessage("Your Position : " + data?.behind);
+      await sendMessage(`Account ${account.name} | Your Position : ${data?.behind}`);
     }
   }
 
@@ -122,6 +126,10 @@ async function runAutomation(token) {
 
 async function silentProtocol() {
   let token = null;
+
+  while (!account.name) {
+    account.name = prompt()('Enter your Account Name: ');
+  }
 
   while (!token) {
     token = loadToken();
