@@ -107,6 +107,8 @@ async function runAutomation(token) {
 
     if (data?.behind <= 5 && !isSent) {
       await sendMessage("Your position is 5, please be READY!");
+      await sendMessage("Your position is 5, please be READY!");
+
       isSent = true;
     }
     else if ((data?.behind % 1000 == 0) & (data?.behind > 0)) {
