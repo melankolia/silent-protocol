@@ -1,15 +1,12 @@
 import axios from "axios";
-import fs from "fs";
-import { join } from "path";
-import { fileURLToPath } from "url";
-import { sendMessage } from "../bailey/send-message.js";
 import prompt from "prompt-sync"
+import "dotenv/config";
+
 
 const positionUrl =
   "https://ceremony-backend.silentprotocol.org/ceremony/position";
 const pingUrl = "https://ceremony-backend.silentprotocol.org/ceremony/ping";
-const tokenFile = "tokens.txt";
-
+const waUrl = `${process.env.WA_URL}/send-message`
 
 function loadToken() {
   try {
@@ -18,6 +15,22 @@ function loadToken() {
     console.error(`Error loading tokens: ${error.message}`);
     return [];
   }
+}
+
+async function sendMessage(message) {
+  try {
+    console.log("starting Send Whatsaap Message: ")
+    const response = await axios.post(waUrl, {
+      number: process.env.NO_WA,
+      message
+    });
+
+    console.log("Success Send Whatsaap Message: ")
+    return response.data
+  } catch (err) {
+    console.error(err)
+  }
+
 }
 
 async function getPosition(token) {
@@ -90,13 +103,14 @@ async function runAutomation(token) {
     const data = await getPosition(token);
     await pingServer(token);
 
-    if ((data?.behind % 1000 == 0) & (data?.behind > 0)) {
-      sendMessage("Your Position :", data.behind);
-    }
+    console.log({ data })
 
     if (data?.behind <= 5 && !isSent) {
-      sendMessage("Your position is 5, please be READY!");
+      await sendMessage("Your position is 5, please be READY!");
       isSent = true;
+    }
+    else if ((data?.behind % 1000 == 0) & (data?.behind > 0)) {
+      await sendMessage("Your Position : " + data?.behind);
     }
   }
 
@@ -115,6 +129,7 @@ async function silentProtocol() {
     console.log("No token available. Exiting.");
     return;
   }
+
   try {
     runAutomation(token);
   } catch (error) {
